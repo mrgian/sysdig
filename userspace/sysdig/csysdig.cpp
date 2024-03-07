@@ -298,9 +298,14 @@ captureinfo do_inspect(sinsp* inspector,
 {
 	captureinfo retval;
 	int32_t res;
+	int32_t next_res;
 	sinsp_evt* ev;
+	sinsp_evt* next_ev;
 
 	inspector->start_capture();
+
+	res = inspector->next(&ev);
+
 	//
 	// Loop through the events
 	//
@@ -315,7 +320,7 @@ captureinfo do_inspect(sinsp* inspector,
 			break;
 		}
 
-		res = inspector->next(&ev);
+		next_res = inspector->next(&next_ev);
 
 		if(res == SCAP_TIMEOUT || res == SCAP_FILTERED_EVENT)
 		{
@@ -338,10 +343,13 @@ captureinfo do_inspect(sinsp* inspector,
 			}
 		}
 
-		if(ui->process_event(ev, res) == true)
+		if(ui->process_event(ev, next_res) == true)
 		{
 			return retval;
 		}
+
+		ev = next_ev;
+		res = next_res;
 
 		retval.m_nevts++;
 	}

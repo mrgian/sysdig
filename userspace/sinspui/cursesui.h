@@ -21,6 +21,8 @@ limitations under the License.
 #include <unistd.h>
 #endif
 
+#include <iostream>
+
 #include "../sysdig/utils/sinsp_opener.h"
 
 #define UI_USER_INPUT_CHECK_PERIOD_NS 10000000
@@ -699,7 +701,7 @@ public:
 				{
 					ASSERT(!m_inspector->is_live());
 					m_eof++;
-					return false;
+					return true;
 				}
 			}
 

@@ -1457,7 +1457,8 @@ void sinsp_cursesui::handle_end_of_sample(sinsp_evt* evt, int32_t next_res)
 	// It's time to refresh the data for this chart.
 	// First of all, create the data for the chart
 	//
-	if(m_output_type == chisel_table::OT_JSON && (m_inspector->is_live() || (m_eof > 0)))
+	//if(m_output_type == chisel_table::OT_JSON && (m_inspector->is_live() || (m_eof > 0)))
+	if(m_output_type == chisel_table::OT_JSON)
 	{
 		printf("{\"progress\": 100, ");
 
