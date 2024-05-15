@@ -86,6 +86,7 @@ jobs:
       skeleton_builder_image: ${{ (steps.builder-files.outputs.any_changed == 'true') && steps.get-new-skeleton-builder.outputs.skeleton_builder_image || env.SKEL_BUILDER_DEV }}
 
   build-skeleton-sysdig-linux-amd64:
+    if: false
     needs: builder
     runs-on: ubuntu-latest
     container:
@@ -112,6 +113,7 @@ jobs:
           key: build-skeleton-${{ github.run_id }}
 
   build-sysdig-linux-amd64:
+    if: false
     needs: [builder,build-skeleton-sysdig-linux-amd64]
     runs-on: ubuntu-latest
     container:
@@ -158,6 +160,7 @@ jobs:
             /build/release/sysdig-*.tar.gz      
 
   build-sysdig-linux-arm64:
+    if: false
     needs: builder
     env:
       REGISTRY: ghcr.io
@@ -235,14 +238,11 @@ jobs:
     name: build-sysdig-other-amd64
     strategy:
       matrix:
-        os: [windows-latest, macos-13]
+        os: [windows-latest]
         include:
           - os: windows-latest
             artifact_name: win
             artifact_ext: exe
-          - os: macos-13
-            artifact_name: osx
-            artifact_ext: dmg
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout Sysdig
@@ -250,7 +250,9 @@ jobs:
       - name: Build
         run: |
           mkdir -p build
-          cd build && cmake -Wno-dev ..
+          cd build
+          git clone -b plugin-api-metrics-win-test https://github.com/mrgian/libs.git mrgian-libs
+          cmake -DFALCOSECURITY_LIBS_SOURCE_DIR="D:/a/sysdig/sysdig/build/mrgian-libs" -Wno-dev ..
           cmake --build . --target package --config Release
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
@@ -260,6 +262,7 @@ jobs:
             build/sysdig-*.${{ matrix.artifact_ext }}
 
   build-sysdig-others-arm64:
+    if: false
     name: build-sysdig-other-arm64
     strategy:
       matrix:
